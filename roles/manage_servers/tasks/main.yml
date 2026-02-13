@@ -1,0 +1,36 @@
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - net-tools
+    - curl
+    - apache2
+    - unzip
+  become: true
+
+- name: Ensure Apache is started and enabled
+  service:
+    name: apache2
+    state: started
+    enabled: true
+  become: true
+
+- name: Stop unwanted services
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop:
+    - bluetooth
+    - postfix
+  ignore_errors: true
+  become: true
+
+- name: Deploy custom webpage
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+  become: true

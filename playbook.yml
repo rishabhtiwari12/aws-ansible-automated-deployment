@@ -1,0 +1,5 @@
+- name: Manage slave servers
+  hosts: webservers
+  become: true
+  roles:
+    - manage_servers
